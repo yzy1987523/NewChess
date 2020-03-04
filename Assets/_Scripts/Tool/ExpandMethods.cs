@@ -324,6 +324,69 @@ public static class ExpandMethods
     {
         return new Quaternion(_v.x, _v.y, _v.z,_v.w);
     }
+
+    //获取指定方向的位置
+    public static Vector2Int GetVec2ToDir(this Vector2Int _curPos, MoveDir _dir)
+    {
+        switch (_dir)
+        {
+            case MoveDir.Up:
+                return new Vector2Int(_curPos.x, _curPos.y + 1);
+            case MoveDir.Right:
+                return new Vector2Int(_curPos.x + 1, _curPos.y);
+            case MoveDir.Down:
+                return new Vector2Int(_curPos.x, _curPos.y - 1);
+            case MoveDir.Left:
+                return new Vector2Int(_curPos.x - 1, _curPos.y);
+        }
+        return default;
+    }
+    public static Vector2Int MoveDirChangeToVec2(this MoveDir _dir)
+    {
+        switch (_dir)
+        {
+            case MoveDir.None:
+                return new Vector2Int(0, 0);
+            case MoveDir.Up:
+                return new Vector2Int(0, 1);
+            case MoveDir.Right:
+                return new Vector2Int(1, 0);
+            case MoveDir.Down:
+                return new Vector2Int(0, -1);
+            case MoveDir.Left:
+                return new Vector2Int(-1, 0);
+            default:
+                break;
+        }
+        return default;
+    }
+    //获取下一步的朝向
+    public static MoveDir GetDir(this Vector2Int _curPos, Vector2Int _target, MoveDir _curDir)
+    {
+        if (_curPos.x == _target.x)
+        {
+            if (_curPos.y > _target.y)
+            {
+                return MoveDir.Down;
+            }
+            return MoveDir.Up;
+        }
+        else if(_curPos.y == _target.y)
+        {
+            if (_curPos.x > _target.x)
+            {
+                return MoveDir.Left;
+            }
+            return MoveDir.Right;
+        }
+        //下个点朝向斜向
+        else
+        {
+            var _dir = _target - _curPos;
+            //_curDir.MoveDirChangeToVec2() - _dir ==============？？？？
+        }
+        return default;
+    }
 }
 [System.Serializable]
 public struct QuaternionStruct

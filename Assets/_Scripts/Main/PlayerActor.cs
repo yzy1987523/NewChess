@@ -1,113 +1,77 @@
-﻿using System.Collections;
+﻿/*文件名：PlayerActor.cs
+ * 作者：YZY
+ * 说明：主角控制器
+ * 上次修改时间：2020/3/4 23：10：52 *
+ * */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerActor : Actor
+public class PlayerActor : VividActor
 {
-    #region Parameters
-    public PlayerArmState curPlayerArmState;
-    WeaponCtrl weaponCtrl;
-    Vector3 attackTargetPos;
+    #region Parameters    
+    
 
     #endregion
     #region Properties
-    public WeaponCtrl WeaponCtrl
-    {
-        get
-        {
-            if (weaponCtrl == null)
-            {
-                weaponCtrl = GetComponentInChildren<WeaponCtrl>();
-            }
-            return weaponCtrl;
-        }
-
-        set
-        {
-            weaponCtrl = value;
-        }
-    }
+   
     #endregion
     #region Private Methods  
-    private void Start()
-    {
-        ToIdle();
-        WeaponCtrl.ChangeWeapon(curPlayerArmState);
-    }
+   
     private void Update()
     {
         if (isMoving) return;
-        var _dir = MoveDir.None;
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            _dir = MoveDir.Left;
-            StartCoroutine(IE_Move(_dir));
+            StartCoroutine( IE_OnceAction(MoveDir.Left));
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            _dir = MoveDir.Right;
-            StartCoroutine(IE_Move(_dir));
+            StartCoroutine(IE_OnceAction(MoveDir.Right));
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            _dir = MoveDir.Up;
-            StartCoroutine(IE_Move(_dir));
+            StartCoroutine(IE_OnceAction(MoveDir.Up));
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            _dir = MoveDir.Down;
-            StartCoroutine(IE_Move(_dir));
+            StartCoroutine(IE_OnceAction(MoveDir.Down));
         }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            SetAttackTarget();
-            StartCoroutine(IE_Attack());
-        }
+       
     }
-    IEnumerator IE_Attack()
-    {        
+    protected IEnumerator IE_OnceAction(MoveDir _dir)
+    {
         isMoving = true;
-        PoseType _attack_0 = PoseType.Attack_0;
-        PoseType _attack_1 = PoseType.Attack_1;
-        switch (curPlayerArmState)
+        //判断_dir方向上是什么：       
+        var _type= LinkInstance.Instance.SceneManager.GetSceneNodeTypeByVec2(Vec2Pos.GetVec2ToDir(_dir));
+        switch (_type)
         {
-            case PlayerArmState.HasWeapon:
-                _attack_0 = PoseType.Attack_HasWeapon_0;
-                _attack_1 = PoseType.Attack_HasWeapon_1;
+            case SceneActorType.Null:
+                //移动
+                yield return StartCoroutine(IE_Move(_dir));
                 break;
-            case PlayerArmState.HasBow:
-                _attack_0 = PoseType.Attack_HasBow_0;
-                _attack_1 = PoseType.Attack_HasBow_1;
+            case SceneActorType.Enemy:
+                //攻击               
+                yield return StartCoroutine(IE_Attack(_dir));
+                break;
+            case SceneActorType.Obstacle:
+                //只是转方向
+                yield return StartCoroutine(IE_Rot(_dir));
+                break;
+            case SceneActorType.Box:
+                //打开箱子
+                break;            
+            case SceneActorType.Follow:
+                //让该方向上的随从判断前进方向的情况
                 break;
         }
-        Pose.ChangePose(_attack_0);
-        if(curPlayerArmState== PlayerArmState.HasBow)
-        {
-            WeaponCtrl.Shot_0();
-        }
-        yield return new WaitForSeconds(0.2f);
-        if (curPlayerArmState == PlayerArmState.HasBow)
-        {
-            WeaponCtrl.Shot_1(attackTargetPos);
-        }        
-        Pose.ChangePose(_attack_1);
-        yield return new WaitForSeconds(0.2f);
-        ToIdle();
+        yield return StartCoroutine( LinkInstance.Instance.SceneManager.IE_EnemyAction());
         isMoving = false;
     }
-    void ToIdle()
+    protected override void ChangeSceneNodes(MoveDir _dir)
     {
-        PoseType _pose = PoseType.Idle;
-        switch (curPlayerArmState)
-        {
-            case PlayerArmState.HasWeapon:
-                _pose = PoseType.Idle_HasWeapon;
-                break;
-            case PlayerArmState.HasBow:
-                _pose = PoseType.Idle_HasBow;
-                break;
-        }
-        Pose.ChangePose(_pose);
+        base.ChangeSceneNodes(_dir);
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(Vec2Pos, SceneActorType.Player);
     }
     #endregion
     #region Utility Methods
@@ -116,13 +80,13 @@ public class PlayerActor : Actor
         attackTargetPos = transform.forward*8 + transform.position;
     }
     #endregion
-
-    public enum PlayerArmState
+    public enum ActionType
     {
-        Null,
-        HasWeapon,
-        HasBow,
+        Move,//移动
+        Interact,//交互
     }
-   
+
+
+
 }
 
