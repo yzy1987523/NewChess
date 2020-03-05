@@ -157,21 +157,7 @@ public class VividActor : NodeActor
     protected virtual void ChangeSceneNodes(MoveDir _dir)
     {
         LinkInstance.Instance.SceneManager.ChangeSceneNodes(Vec2Pos, SceneActorType.Null);
-        switch (_dir)
-        {           
-            case MoveDir.Up:
-                Vec2Pos = new Vector2Int(Vec2Pos.x, Vec2Pos.y + 1);
-                break;
-            case MoveDir.Right:
-                Vec2Pos = new Vector2Int(Vec2Pos.x+1, Vec2Pos.y);
-                break;
-            case MoveDir.Down:
-                Vec2Pos = new Vector2Int(Vec2Pos.x, Vec2Pos.y -1);
-                break;
-            case MoveDir.Left:
-                Vec2Pos = new Vector2Int(Vec2Pos.x-1, Vec2Pos.y);
-                break;
-        }                
+        Vec2Pos += _dir.MoveDirChangeToVec2();                   
     }
     protected IEnumerator IE_Attack(MoveDir _dir)
     {
@@ -223,8 +209,8 @@ public class VividActor : NodeActor
     public override void Init(SceneActorType _type)
     {
         base.Init(_type);
-        ToIdle();
-        WeaponCtrl.ChangeWeapon(curPlayerArmState);
+        //ToIdle();
+        //WeaponCtrl.ChangeWeapon(curPlayerArmState);
     }
     #endregion
     public enum PlayerArmState

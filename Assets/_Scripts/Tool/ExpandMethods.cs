@@ -384,8 +384,43 @@ public static class ExpandMethods
         {
             var _dir = _target - _curPos;
             //_curDir.MoveDirChangeToVec2() - _dir ==============？？？？
+            var _curdir = _curDir.MoveDirChangeToVec2();
+             var _angle=Vector2.Angle(_curdir, _dir);
+            if (_angle == 45||_angle==315)
+            {
+                return _curDir;
+            }
+            if (_angle == 135)
+            {                
+                return (new Vector2Int(_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
+            }
+            if (_angle == 225)
+            {
+                return (new Vector2Int(-_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
+            }
         }
         return default;
+    }
+
+    public static MoveDir Vec2ChangeToMoveDir(this Vector2Int _vec)
+    {
+        if (_vec.x == 0)
+        {
+            if (_vec.y > 0)
+            {
+                return MoveDir.Up;
+            }
+            return MoveDir.Down;
+        }
+        else
+        {
+            if (_vec.x > 0)
+            {
+                return MoveDir.Right;
+                
+            }
+            return MoveDir.Left;
+        }
     }
 }
 [System.Serializable]

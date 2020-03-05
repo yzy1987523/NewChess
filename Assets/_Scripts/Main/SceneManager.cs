@@ -12,7 +12,7 @@ public class SceneManager : MonoBehaviour
     #region Parameters
     public Vector2Int size = new Vector2Int(16, 10);
     //int nodeCount;
-    public PlayerActor mainPlayer;
+    public PlayerActor playerObj;
     public Vector2Int wallCount = new Vector2Int(30, 80);
     public NodeActor wallObj;
     public Vector2Int enemyCount = new Vector2Int(1, 3);
@@ -24,10 +24,11 @@ public class SceneManager : MonoBehaviour
          
     List<EnemyActor> enemyList = new List<EnemyActor>();
     List<BoxCtrl> boxList = new List<BoxCtrl>();
+    PlayerActor mainPlayer;
     #endregion
     #region Properties
     #endregion
-   
+
     #region 创建初始场景
 
     //随机生成若干格子，包括起点，终点，障碍
@@ -42,9 +43,10 @@ public class SceneManager : MonoBehaviour
         var _tempNodes = new List<NodeClass>();
         //设置主角
         var _node = new NodeClass();
-        _node.nodeType = NodeType.NormalNode;        
-        _node.nodeObj = mainPlayer;
-        mainPlayer.Init(SceneActorType.Player);
+        _node.nodeType = NodeType.NormalNode;
+        _node.nodeObj = Instantiate(playerObj);
+        mainPlayer= (PlayerActor)_node.nodeObj;
+        _node.nodeObj.Init(SceneActorType.Player);        
         _tempNodes.Add(_node);
         //设置墙
         var _wallCount = Random.Range(wallCount.x, wallCount.y);
@@ -100,6 +102,7 @@ public class SceneManager : MonoBehaviour
                 nodes[i].nodeObj.SetPos(nodes[i].nodePos);
             }
         }
+        AStarTool.SetNodes(nodes,size);
     }
     Vector2Int GetPosByIndex(int _index)
     {

@@ -20,5 +20,8 @@ public class Runtime : MonoBehaviour
         }
     }
 
-   
+    private void Start()
+    {
+        LinkInstance.Instance.SceneManager.RCreateNode();
+    }
 }
