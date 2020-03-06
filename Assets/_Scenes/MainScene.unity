@@ -12688,7 +12688,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 16, y: 10}
   playerObj: {fileID: 358314548}
-  wallCount: {x: 10, y: 30}
+  wallCount: {x: 0, y: 0}
   wallObj: {fileID: 687524316}
   enemyCount: {x: 1, y: 3}
   enemyObj: {fileID: 1995686446}

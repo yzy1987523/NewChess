@@ -136,7 +136,8 @@ public class SceneManager : MonoBehaviour
     {
         sceneStateList[GetIndexByVec2(_pos)] = _targetType;
     }
-     int GetIndexByVec2(Vector2Int _v)
+
+    int GetIndexByVec2(Vector2Int _v)
     {
         var _temp = _v.x+_v.y*size.x;        
         return _temp;

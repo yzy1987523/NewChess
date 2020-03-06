@@ -129,13 +129,14 @@ public class VividActor : NodeActor
     protected virtual IEnumerator IE_Move(MoveDir _dir)
     {
         yield return StartCoroutine(IE_Rot(_dir));
+        PlayAnim("Move");
         var _end = false;
         var _timer = 0f;        
         var _v = 0f;       
         var _moveUseTime = moveDis / moveSpeed;
         var _orgPos = ThisTrans.position;
         var _targetPos = ThisTrans.position +ThisTrans.forward* moveDis;
-        ActorAnim.SetBool("Jump", true);
+       
         while (!_end)
         {
             if (_v >= 1)
@@ -152,6 +153,10 @@ public class VividActor : NodeActor
         }
         ChangeSceneNodes(_dir);
        
+    }
+    protected virtual void PlayAnim(string _animName)
+    {
+        ActorAnim.SetBool(_animName, true);
     }
     //每次移动都会造成寻路节点的状态变化及自身的位置变化
     protected virtual void ChangeSceneNodes(MoveDir _dir)

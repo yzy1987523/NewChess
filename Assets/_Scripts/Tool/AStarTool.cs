@@ -15,12 +15,12 @@ namespace AStar
     public class AStarTool : MonoBehaviour
     {
         static List<NodeClass> nodes;
-        static NodeClass startNode;
-        static NodeClass endNode;
         static Vector2Int size = new Vector2Int(16, 10);
         #region Test
         public Vector2Int obstacleNodeCount = new Vector2Int(5, 10);
         public GameObject[] nodeObj;
+        static NodeClass startNode;
+        static NodeClass endNode;
         //随机生成若干格子，包括起点，终点，障碍
         [ContextMenu("RCreateNode")]
         public void RCreateNode()
@@ -109,6 +109,7 @@ namespace AStar
         #region Core Algorithm
         static List<NodeClass> openList = new List<NodeClass>();
         static List<NodeClass> closeList = new List<NodeClass>();
+        static Vector2Int endPos;
         static NodeClass CoreAlgorithm(NodeClass _node)
         {
 
@@ -133,14 +134,15 @@ namespace AStar
                         var _right = i + 1;
                         var _tempLeftIndex = GetNodeIndex(GetNodePos(_node.nodePos, _left));
                         var _tempRightIndex = GetNodeIndex(GetNodePos(_node.nodePos, _right));
+                        if (_tempLeftIndex < 0 || _tempLeftIndex >= nodes.Count || _tempRightIndex < 0 || _tempRightIndex >= nodes.Count) continue;
                         if (nodes[_tempLeftIndex].nodeType == NodeType.ObstacleNode && nodes[_tempRightIndex].nodeType == NodeType.ObstacleNode)
                         {
-                            closeList.Add(nodes[_index]);
+                            //closeList.Add(nodes[_index]);
                             continue;
                         }
                     }
 
-                    if (nodes[_index].nodeType == NodeType.EndNode)
+                    if (nodes[_index].nodePos == endPos)
                     {
                         //找到终点，最短路径为当前node开始回溯parentNode
                         nodes[_index].parentNode = _node;
@@ -149,7 +151,7 @@ namespace AStar
                     else
                     {
                         var _G = GetG(_pos, _node);
-                        var _H = GetH(_pos);
+                        var _H = GetH(_pos,endPos);
                         //已经在openlist中了
                         if (openList.Contains(nodes[_index]))
                         {
@@ -214,9 +216,9 @@ namespace AStar
             return _pos.x + _pos.y * size.x;
         }
         //节点到终点的距离，用曼哈顿方法
-        static int GetH(Vector2Int _pos)
+        static int GetH(Vector2Int _pos,Vector2Int _endPos)
         {
-            return (Mathf.Abs(_pos.x - endNode.nodePos.x) + Mathf.Abs(_pos.y - endNode.nodePos.y)) * 10;
+            return (Mathf.Abs(_pos.x - _endPos.x) + Mathf.Abs(_pos.y - _endPos.y)) * 10;
         }
         //节点到父节点的距离+父节点的G
         static int GetG(Vector2Int _a, NodeClass _b)
@@ -264,9 +266,7 @@ namespace AStar
             closeList.Clear();
             startNode = new NodeClass();
             startNode.nodePos = _start;
-            endNode = new NodeClass();
-            endNode.nodeType = NodeType.EndNode;
-            endNode.nodePos = _end;
+            endPos = _end;
             return CoreAlgorithm(startNode);
         }
 
