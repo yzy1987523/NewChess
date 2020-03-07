@@ -36,7 +36,7 @@ public class EnemyActor : VividActor
     public virtual IEnumerator IE_OnceAction()
     {
         //获取下一步的方向
-        var _nextPos = AStarTool.GetNextPos(Vec2Pos, LinkInstance.Instance.MainPlayer.Vec2Pos);
+        var _nextPos = AStarTool.GetNextPos( LinkInstance.Instance.MainPlayer.Vec2Pos,Vec2Pos);
         var _dir = Vec2Pos.GetDir(_nextPos, curDir);
         var _type = LinkInstance.Instance.SceneManager.GetSceneNodeTypeByVec2(Vec2Pos.GetVec2ToDir(_dir));
         switch (_type)

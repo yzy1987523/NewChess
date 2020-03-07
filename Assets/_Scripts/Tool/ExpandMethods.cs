@@ -392,11 +392,11 @@ public static class ExpandMethods
             }
             if (_angle == 135)
             {                
-                return (new Vector2Int(_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
+                return (new Vector2Int(-_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
             }
             if (_angle == 225)
             {
-                return (new Vector2Int(-_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
+                return (new Vector2Int(_curdir.y, _curdir.x)).Vec2ChangeToMoveDir();
             }
         }
         return default;
