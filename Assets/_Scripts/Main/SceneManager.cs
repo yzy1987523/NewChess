@@ -15,6 +15,8 @@ public class SceneManager : MonoBehaviour
     public PlayerActor playerObj;
     public Vector2Int wallCount = new Vector2Int(30, 80);
     public NodeActor wallObj;
+    public Vector2Int followCount = new Vector2Int(1, 1);
+    public RoleTemplateActor followObj;
     public Vector2Int enemyCount = new Vector2Int(1, 3);
     public EnemyActor enemyObj;
     public Vector2Int boxCount = new Vector2Int(1, 2);
@@ -23,6 +25,7 @@ public class SceneManager : MonoBehaviour
     List<SceneActorType> sceneStateList = new List<SceneActorType>();
          
     List<EnemyActor> enemyList = new List<EnemyActor>();
+    List<RoleTemplateActor> followList = new List<RoleTemplateActor>();
     List<BoxCtrl> boxList = new List<BoxCtrl>();
     PlayerActor mainPlayer;
     #endregion
@@ -69,6 +72,17 @@ public class SceneManager : MonoBehaviour
             enemyList.Add((EnemyActor)_temp.nodeObj);
             _tempNodes.Add(_temp);
         }
+        //设置随从
+        var _followCount = Random.Range(followCount.x, followCount.y);
+        for (var i = 0; i < _followCount; i++)
+        {
+            var _temp = new NodeClass();
+            _temp.nodeType = NodeType.NormalNode;
+            _temp.nodeObj = Instantiate(followObj);
+            _temp.nodeObj.Init(SceneActorType.Follow);
+            followList.Add((RoleTemplateActor)_temp.nodeObj);
+            _tempNodes.Add(_temp);
+        }
         //设置宝箱       
         var _boxCount = Random.Range(boxCount.x, boxCount.y);
         for (var i = 0; i < _boxCount; i++)
@@ -81,7 +95,7 @@ public class SceneManager : MonoBehaviour
             _tempNodes.Add(_temp);
         }
         //设置正常node
-        for (var i = _wallCount+_boxCount+_enemyCount+1; i < _nodeCount; i++)
+        for (var i = _wallCount+_boxCount+_enemyCount+_followCount+1; i < _nodeCount; i++)
         {
             var _temp = new NodeClass();
             _temp.nodeType = NodeType.NormalNode;          

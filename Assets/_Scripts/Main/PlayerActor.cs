@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerActor : VividActor
+public class PlayerActor : RoleTemplateActor
 {
     #region Parameters    
     
@@ -39,16 +39,19 @@ public class PlayerActor : VividActor
         }
        
     }
+
     protected IEnumerator IE_OnceAction(MoveDir _dir)
     {
         isMoving = true;
         //判断_dir方向上是什么：       
-        var _type= LinkInstance.Instance.SceneManager.GetSceneNodeTypeByVec2(Vec2Pos.GetVec2ToDir(_dir));
+        var _type = LinkInstance.Instance.SceneManager.GetSceneNodeTypeByVec2(Vec2Pos.GetVec2ToDir(_dir));
+        var _enemyCanMove = true;
         switch (_type)
         {
             case SceneActorType.Null:
                 //移动
                 yield return StartCoroutine(IE_Move(_dir));
+                //移动后判断3个方向是否有随从，有的话就让随从跟随
                 break;
             case SceneActorType.Enemy:
                 //攻击               
@@ -57,36 +60,24 @@ public class PlayerActor : VividActor
             case SceneActorType.Obstacle:
                 //只是转方向
                 yield return StartCoroutine(IE_Rot(_dir));
+                _enemyCanMove = false;
                 break;
             case SceneActorType.Box:
                 //打开箱子
-                break;            
+                _enemyCanMove = false;
+                break;
             case SceneActorType.Follow:
                 //让该方向上的随从判断前进方向的情况
                 break;
         }
-        yield return StartCoroutine( LinkInstance.Instance.SceneManager.IE_EnemyAction());
+        if (_enemyCanMove)
+            yield return StartCoroutine(LinkInstance.Instance.SceneManager.IE_EnemyAction());
         isMoving = false;
-    }
-    protected override void ChangeSceneNodes(MoveDir _dir)
-    {
-        base.ChangeSceneNodes(_dir);
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(Vec2Pos, SceneActorType.Player);
     }
     #endregion
     #region Utility Methods
-    public void SetAttackTarget()
-    {
-        attackTargetPos = transform.forward*8 + transform.position;
-    }
+
     #endregion
-    public enum ActionType
-    {
-        Move,//移动
-        Interact,//交互
-    }
-
-
 
 }
 

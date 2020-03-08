@@ -217,6 +217,10 @@ public class VividActor : NodeActor
         //ToIdle();
         //WeaponCtrl.ChangeWeapon(curPlayerArmState);
     }
+    public virtual void SetAttackTarget()
+    {
+        attackTargetPos = transform.forward * 8 + transform.position;
+    }
     #endregion
     public enum PlayerArmState
     {
