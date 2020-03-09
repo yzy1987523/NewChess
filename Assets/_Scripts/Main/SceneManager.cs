@@ -23,7 +23,7 @@ public class SceneManager : MonoBehaviour
     public BoxCtrl boxObj;
     List<NodeClass> nodes = new List<NodeClass>();
     List<SceneActorType> sceneStateList = new List<SceneActorType>();
-         
+
     List<EnemyActor> enemyList = new List<EnemyActor>();
     List<RoleTemplateActor> followList = new List<RoleTemplateActor>();
     List<BoxCtrl> boxList = new List<BoxCtrl>();
@@ -42,14 +42,14 @@ public class SceneManager : MonoBehaviour
         enemyList.Clear();
         boxList.Clear();
         Destroy();
-        var _nodeCount = size.x * size.y;       
+        var _nodeCount = size.x * size.y;
         var _tempNodes = new List<NodeClass>();
         //设置主角
         var _node = new NodeClass();
         _node.nodeType = NodeType.NormalNode;
         _node.nodeObj = Instantiate(playerObj);
-        mainPlayer= (PlayerActor)_node.nodeObj;
-        _node.nodeObj.Init(SceneActorType.Player);        
+        mainPlayer = (PlayerActor)_node.nodeObj;
+        _node.nodeObj.Init(SceneActorType.Player);
         _tempNodes.Add(_node);
         //设置墙
         var _wallCount = Random.Range(wallCount.x, wallCount.y);
@@ -89,16 +89,16 @@ public class SceneManager : MonoBehaviour
         {
             var _temp = new NodeClass();
             _temp.nodeType = NodeType.ObstacleNode;
-            _temp.nodeObj = Instantiate(boxObj);        
+            _temp.nodeObj = Instantiate(boxObj);
             _temp.nodeObj.Init(SceneActorType.Box);
             boxList.Add((BoxCtrl)_temp.nodeObj);
             _tempNodes.Add(_temp);
         }
         //设置正常node
-        for (var i = _wallCount+_boxCount+_enemyCount+_followCount+1; i < _nodeCount; i++)
+        for (var i = _wallCount + _boxCount + _enemyCount + _followCount + 1; i < _nodeCount; i++)
         {
             var _temp = new NodeClass();
-            _temp.nodeType = NodeType.NormalNode;          
+            _temp.nodeType = NodeType.NormalNode;
             _tempNodes.Add(_temp);
         }
         //给nodes赋值
@@ -111,12 +111,12 @@ public class SceneManager : MonoBehaviour
             {
                 nodes[i].nodeObj.transform.SetParent(transform);
                 nodes[i].nodeObj.transform.localPosition = GetPosByVec2(nodes[i].nodePos);
-                nodes[i].nodeObj.transform.localRotation =Quaternion.Euler(0,180,0);
-                sceneStateList[i]=nodes[i].nodeObj.ThisActorType;
+                nodes[i].nodeObj.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                sceneStateList[i] = nodes[i].nodeObj.ThisActorType;
                 nodes[i].nodeObj.SetPos(nodes[i].nodePos);
             }
         }
-        AStarTool.SetNodes(nodes,size);
+        AStarTool.SetNodes(nodes, size);
     }
     Vector2Int GetPosByIndex(int _index)
     {
@@ -146,14 +146,16 @@ public class SceneManager : MonoBehaviour
         return mainPlayer;
     }
     //改变某个节点的状态
-    public void ChangeSceneNodes(Vector2Int _pos, SceneActorType _targetType)
+    public void ChangeSceneNodes(NodeActor _node, Vector2Int _pos, SceneActorType _targetType)
     {
-        sceneStateList[GetIndexByVec2(_pos)] = _targetType;
+        var _index = GetIndexByVec2(_pos);
+        sceneStateList[_index] = _targetType;
+        nodes[_index].nodeObj = _node;
     }
 
     int GetIndexByVec2(Vector2Int _v)
     {
-        var _temp = _v.x+_v.y*size.x;        
+        var _temp = _v.x + _v.y * size.x;
         return _temp;
     }
     public SceneActorType GetSceneNodeTypeByVec2(Vector2Int _v)
@@ -165,15 +167,26 @@ public class SceneManager : MonoBehaviour
         }
         return sceneStateList[_temp];
     }
+    //根据坐标获取对象
+
+    public NodeActor GetNodeByVec2(Vector2Int _v)
+    {
+        var _temp = GetIndexByVec2(_v);
+        if (_temp < 0 || _temp >= nodes.Count)
+        {
+            return null;
+        }
+        return nodes[_temp].nodeObj;
+    }
     #endregion
 
 
     #region Enemy Manager
     public IEnumerator IE_EnemyAction()
     {
-        for(var i = 0; i < enemyList.Count; i++)
+        for (var i = 0; i < enemyList.Count; i++)
         {
-            yield return StartCoroutine( enemyList[i].IE_OnceAction());
+            yield return StartCoroutine(enemyList[i].IE_OnceAction());
         }
     }
     #endregion

@@ -161,7 +161,7 @@ public class VividActor : NodeActor
     //每次移动都会造成寻路节点的状态变化及自身的位置变化
     protected virtual void ChangeSceneNodes(MoveDir _dir)
     {
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(Vec2Pos, SceneActorType.Null);
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(null, Vec2Pos, SceneActorType.Null);
         Vec2Pos += _dir.MoveDirChangeToVec2();                   
     }
     protected IEnumerator IE_Attack(MoveDir _dir)

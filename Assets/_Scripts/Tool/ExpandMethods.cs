@@ -325,22 +325,12 @@ public static class ExpandMethods
         return new Quaternion(_v.x, _v.y, _v.z,_v.w);
     }
 
-    //获取指定方向的位置
+    //获取指定方向的位置:当前位置在某个方向上的坐标
     public static Vector2Int GetVec2ToDir(this Vector2Int _curPos, MoveDir _dir)
-    {
-        switch (_dir)
-        {
-            case MoveDir.Up:
-                return new Vector2Int(_curPos.x, _curPos.y + 1);
-            case MoveDir.Right:
-                return new Vector2Int(_curPos.x + 1, _curPos.y);
-            case MoveDir.Down:
-                return new Vector2Int(_curPos.x, _curPos.y - 1);
-            case MoveDir.Left:
-                return new Vector2Int(_curPos.x - 1, _curPos.y);
-        }
-        return default;
+    {        
+        return _dir.MoveDirChangeToVec2() + _curPos;
     }
+    //将MoveDir转换为相对坐标
     public static Vector2Int MoveDirChangeToVec2(this MoveDir _dir)
     {
         switch (_dir)
@@ -360,7 +350,7 @@ public static class ExpandMethods
         }
         return default;
     }
-    //获取下一步的朝向
+    //获取下一步的朝向:转为寻路设计，根据当前方向和下个节点的位置，确认下一步的朝向
     public static MoveDir GetDir(this Vector2Int _curPos, Vector2Int _target, MoveDir _curDir)
     {
         if (_curPos.x == _target.x)
@@ -401,7 +391,7 @@ public static class ExpandMethods
         }
         return default;
     }
-
+    //将相对坐标转换为MoveDir
     public static MoveDir Vec2ChangeToMoveDir(this Vector2Int _vec)
     {
         if (_vec.x == 0)

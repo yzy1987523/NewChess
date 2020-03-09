@@ -44,6 +44,6 @@ public class NodeActor : MonoBehaviour
     public void SetPos(Vector2Int _pos)
     {
         vec2Pos = _pos;
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(vec2Pos, ThisActorType);
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(this, vec2Pos, ThisActorType);
     }
 }

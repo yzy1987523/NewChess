@@ -23,7 +23,7 @@ public class EnemyActor : VividActor
     protected override void ChangeSceneNodes(MoveDir _dir)
     {
         base.ChangeSceneNodes(_dir);
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(Vec2Pos, SceneActorType.Enemy);
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(this,Vec2Pos, SceneActorType.Enemy);
     }
     #endregion
     #region Utility Methods
