@@ -24,10 +24,10 @@ public class NodeActor : MonoBehaviour
         }
     }
 
-    public SceneActorType ThisActorType
+    public virtual SceneActorType ThisActorType
     {
         get
-        {
+        {          
             return thisActorType;
         }
 

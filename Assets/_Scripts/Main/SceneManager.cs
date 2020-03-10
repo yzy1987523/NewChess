@@ -23,6 +23,8 @@ public class SceneManager : MonoBehaviour
     public BoxCtrl boxObj;
     List<NodeClass> nodes = new List<NodeClass>();
     List<SceneActorType> sceneStateList = new List<SceneActorType>();
+    List<TextMesh> textList = new List<TextMesh>();
+    public TextMesh textObj;
 
     List<EnemyActor> enemyList = new List<EnemyActor>();
     List<RoleTemplateActor> followList = new List<RoleTemplateActor>();
@@ -41,6 +43,7 @@ public class SceneManager : MonoBehaviour
         nodes.Clear();
         enemyList.Clear();
         boxList.Clear();
+        textList.Clear();
         Destroy();
         var _nodeCount = size.x * size.y;
         var _tempNodes = new List<NodeClass>();
@@ -106,6 +109,10 @@ public class SceneManager : MonoBehaviour
         for (var i = 0; i < nodes.Count; i++)
         {
             nodes[i].nodePos = GetPosByIndex(i);
+            var _text = Instantiate(textObj);
+            _text.transform.SetParent(transform);
+            _text.transform.localPosition = GetPosByVec2(nodes[i].nodePos);
+            textList.Add(_text);
             sceneStateList.Add(SceneActorType.Null);
             if (nodes[i].nodeObj != null)
             {
@@ -115,8 +122,10 @@ public class SceneManager : MonoBehaviour
                 sceneStateList[i] = nodes[i].nodeObj.ThisActorType;
                 nodes[i].nodeObj.SetPos(nodes[i].nodePos);
             }
+            textList[i].text = sceneStateList[i].ToString();
         }
         AStarTool.SetNodes(nodes, size);
+        mainPlayer.StartGame();
     }
     Vector2Int GetPosByIndex(int _index)
     {
@@ -151,6 +160,7 @@ public class SceneManager : MonoBehaviour
         var _index = GetIndexByVec2(_pos);
         sceneStateList[_index] = _targetType;
         nodes[_index].nodeObj = _node;
+        textList[_index].text = _targetType.ToString();
     }
 
     int GetIndexByVec2(Vector2Int _v)

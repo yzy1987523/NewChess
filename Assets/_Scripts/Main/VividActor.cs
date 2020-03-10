@@ -22,7 +22,8 @@ public class VividActor : NodeActor
     Pose pose;
     public PlayerArmState curPlayerArmState;
     protected WeaponCtrl weaponCtrl;
-    protected Vector3 attackTargetPos;   
+    protected Vector3 attackTargetPos;
+   
     #endregion
     #region Properties
     public Transform ThisTrans
@@ -129,6 +130,7 @@ public class VividActor : NodeActor
     protected virtual IEnumerator IE_Move(MoveDir _dir)
     {
         yield return StartCoroutine(IE_Rot(_dir));
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(null, Vec2Pos, SceneActorType.Null);
         PlayAnim("Move");
         var _end = false;
         var _timer = 0f;        
@@ -160,9 +162,9 @@ public class VividActor : NodeActor
     }
     //每次移动都会造成寻路节点的状态变化及自身的位置变化
     protected virtual void ChangeSceneNodes(MoveDir _dir)
-    {
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(null, Vec2Pos, SceneActorType.Null);
-        Vec2Pos += _dir.MoveDirChangeToVec2();                   
+    {        
+        Vec2Pos += _dir.MoveDirChangeToVec2();
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(this, Vec2Pos, ThisActorType);
     }
     protected IEnumerator IE_Attack(MoveDir _dir)
     {

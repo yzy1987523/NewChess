@@ -12,8 +12,6 @@ public class PlayerActor : RoleTemplateActor
     #region Parameters    
     List<RoleTemplateActor> roleTemplateActors;
 
-
-
     #endregion
     #region Properties
     public List<RoleTemplateActor> RoleTemplateActors
@@ -56,13 +54,14 @@ public class PlayerActor : RoleTemplateActor
         }
        
     }
-
+   
     protected IEnumerator IE_OnceAction(MoveDir _dir)
     {
         isMoving = true;
         nextActionType=CheckMoveDir(_dir);
         for(var i = 0; i < RoleTemplateActors.Count; i++)
         {
+            if (RoleTemplateActors[i].hasCheakAction) continue;
             RoleTemplateActors[i].CheckMoveDir(_dir);
             StartCoroutine(RoleTemplateActors[i].IE_Action(_dir));
         }
@@ -70,7 +69,7 @@ public class PlayerActor : RoleTemplateActor
         //判断所有随从，是否脱离了队伍：与主角断开连接（三消算法）
         for(var i = 0; i < RoleTemplateActors.Count; i++)
         {
-
+            RoleTemplateActors[i].hasCheakAction = false;
         }
         if (nextActionType==ActionType.Move|| nextActionType == ActionType.Attack)
             yield return StartCoroutine(LinkInstance.Instance.SceneManager.IE_EnemyAction());
@@ -80,7 +79,10 @@ public class PlayerActor : RoleTemplateActor
     }
     #endregion
     #region Utility Methods
-
+    public void StartGame()
+    {
+        CheckAround(curDir);
+    }
     #endregion
 
 }

@@ -13,6 +13,7 @@ public class RoleTemplateActor : VividActor
     public delegate void NetDelegate(string val);
     public bool hasCheakAction;//确认行为后置为true，执行完后置为false
     public ActionType nextActionType;
+    
     #endregion
     #region Properties
 
@@ -21,11 +22,7 @@ public class RoleTemplateActor : VividActor
 
    
    
-    protected override void ChangeSceneNodes(MoveDir _dir)
-    {
-        base.ChangeSceneNodes(_dir);
-        LinkInstance.Instance.SceneManager.ChangeSceneNodes(this, Vec2Pos, SceneActorType.Player);
-    }
+   
     protected virtual IEnumerator IE_Interact(MoveDir _dir)
     {
         yield return null;
@@ -41,6 +38,7 @@ public class RoleTemplateActor : VividActor
                 if (!LinkInstance.Instance.MainPlayer.RoleTemplateActors.Contains(_role)) {
                     StartCoroutine(_role.IE_Rot(_dir));
                     LinkInstance.Instance.MainPlayer.RoleTemplateActors.Add(_role);
+                    _role.CheckAround(_dir);
                 }
             }
         }
@@ -104,7 +102,6 @@ public class RoleTemplateActor : VividActor
                 yield return StartCoroutine(IE_Interact(_dir));
                 break;
         }
-
     }
     #endregion
     public enum ActionType
