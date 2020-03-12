@@ -98,35 +98,7 @@ public class VividActor : NodeActor
 
     #endregion
     #region Private Methods       
-    protected virtual IEnumerator IE_Rot(MoveDir _dir)
-    {
-        var _end = false;
-        var _timer = 0f;
-        var _v = 0f;
-        //如果方向不一样就先转身
-        if (curDir != _dir)
-        {
-            var _angle = StaticFun.GetRotAngle(curDir, _dir);
-            var _useTime = Mathf.Abs(_angle / rotSpeed);
-            var _orgRot = ThisTrans.rotation;
-            var _targetRot = ThisTrans.rotation * Quaternion.Euler(0, _angle, 0);
-            while (!_end)
-            {
-                if (_v >= 1)
-                {
-                    _end = true;
-                }
-                else
-                {
-                    _timer += Time.deltaTime;
-                }
-                _v = Mathf.Clamp01(_timer / _useTime);
-                ThisTrans.rotation = Quaternion.SlerpUnclamped(_orgRot, _targetRot, EasingManager.GetEaseProgress(rotEasingType, _v));
-                yield return null;
-            }
-            curDir = _dir;           
-        }
-    }
+   
     protected virtual IEnumerator IE_Move(MoveDir _dir)
     {
         yield return StartCoroutine(IE_Rot(_dir));
@@ -216,8 +188,37 @@ public class VividActor : NodeActor
     public override void Init(SceneActorType _type)
     {
         base.Init(_type);
-        //ToIdle();
-        //WeaponCtrl.ChangeWeapon(curPlayerArmState);
+        ToIdle();
+        WeaponCtrl.ChangeWeapon(curPlayerArmState);
+    }
+    public virtual IEnumerator IE_Rot(MoveDir _dir)
+    {
+        var _end = false;
+        var _timer = 0f;
+        var _v = 0f;
+        //如果方向不一样就先转身
+        if (curDir != _dir)
+        {
+            var _angle = StaticFun.GetRotAngle(curDir, _dir);
+            var _useTime = Mathf.Abs(_angle / rotSpeed);
+            var _orgRot = ThisTrans.rotation;
+            var _targetRot = ThisTrans.rotation * Quaternion.Euler(0, _angle, 0);
+            while (!_end)
+            {
+                if (_v >= 1)
+                {
+                    _end = true;
+                }
+                else
+                {
+                    _timer += Time.deltaTime;
+                }
+                _v = Mathf.Clamp01(_timer / _useTime);
+                ThisTrans.rotation = Quaternion.SlerpUnclamped(_orgRot, _targetRot, EasingManager.GetEaseProgress(rotEasingType, _v));
+                yield return null;
+            }
+            curDir = _dir;
+        }
     }
     public virtual void SetAttackTarget()
     {

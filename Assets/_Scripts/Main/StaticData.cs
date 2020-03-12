@@ -9,6 +9,14 @@ using UnityEngine;
 
 public class StaticData
 {
+    #region 公共变量
+    public static float FollowRotTime;
+    #endregion
+    #region 统一量
+    public static Color FollowColor_Follow=Color.green;
+    public static Color FollowColor_Normal=Color.yellow;
+
+    #endregion
     public enum FilePathType
     {
         PoseData,

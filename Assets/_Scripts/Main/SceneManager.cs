@@ -165,7 +165,8 @@ public class SceneManager : MonoBehaviour
 
     int GetIndexByVec2(Vector2Int _v)
     {
-        var _temp = _v.x + _v.y * size.x;
+        if (_v.x < 0 || _v.y < 0||_v.x>size.x-1||_v.y>size.y-1) return -1;
+        var _temp =_v.x +_v.y * size.x;
         return _temp;
     }
     public SceneActorType GetSceneNodeTypeByVec2(Vector2Int _v)

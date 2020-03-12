@@ -11,6 +11,7 @@ public class PlayerActor : RoleTemplateActor
 {
     #region Parameters    
     List<RoleTemplateActor> roleTemplateActors;
+    bool hasAddFollow;
 
     #endregion
     #region Properties
@@ -58,11 +59,31 @@ public class PlayerActor : RoleTemplateActor
     protected IEnumerator IE_OnceAction(MoveDir _dir)
     {
         isMoving = true;
+        nextActionType = ActionType.Stop;
         nextActionType=CheckMoveDir(_dir);
         for(var i = 0; i < RoleTemplateActors.Count; i++)
         {
-            if (RoleTemplateActors[i].hasCheakAction) continue;
+            RoleTemplateActors[i].hasCheckLink = false;            
             RoleTemplateActors[i].CheckMoveDir(_dir);
+        }        
+        if (nextActionType == ActionType.Move) {
+            hasCheckLink = false;
+            CheckLink();
+            var _step = 0;
+            while(_step< RoleTemplateActors.Count)
+            {
+                if (!RoleTemplateActors[_step].hasCheckLink)
+                {
+                    RemoveFollow(RoleTemplateActors[_step]);
+                }
+                else
+                {
+                    _step++;
+                }
+            }
+        }
+        for (var i = 0; i < RoleTemplateActors.Count; i++)
+        {   
             StartCoroutine(RoleTemplateActors[i].IE_Action(_dir));
         }
          yield return StartCoroutine(IE_Action(_dir));
@@ -71,18 +92,45 @@ public class PlayerActor : RoleTemplateActor
         {
             RoleTemplateActors[i].hasCheakAction = false;
         }
+        if (hasAddFollow)
+        {
+            yield return new WaitForSeconds(StaticData.FollowRotTime);
+            hasAddFollow = false;
+        }
         if (nextActionType==ActionType.Move|| nextActionType == ActionType.Attack)
             yield return StartCoroutine(LinkInstance.Instance.SceneManager.IE_EnemyAction());
         isMoving = false;
-        hasCheakAction = false;
-        
+        hasCheakAction = false;        
     }
+
+    //让所有随从转向正方向
+    //protected IEnumerator FollowRot()
+    //{
+    //    for (var i = 0; i < RoleTemplateActors.Count; i++)
+    //    {         
+    //       yield return StartCoroutine(RoleTemplateActors[i].IE_Rot(curDir));
+    //    }        
+    //}
+   
     #endregion
     #region Utility Methods
     public void StartGame()
     {
-        CheckAround(curDir);
+       CheckAround(curDir);
     }
+    public void AddFollow(RoleTemplateActor _follow)
+    {
+        hasAddFollow = true;
+        _follow.CheckMat(SceneActorType.Player);
+        RoleTemplateActors.Add(_follow);
+    }
+    public void RemoveFollow(RoleTemplateActor _follow)
+    {
+        _follow.CheckMat(SceneActorType.Follow);
+        RoleTemplateActors.Remove(_follow);
+    }
+    //检测已有的随从是否还能跟上
+   
     #endregion
 
 }
