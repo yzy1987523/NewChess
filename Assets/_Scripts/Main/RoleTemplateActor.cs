@@ -117,7 +117,7 @@ public class RoleTemplateActor : VividActor
         if(_type==SceneActorType.Follow)
         CheckMat(SceneActorType.Follow);
     }
-    public ActionType CheckMoveDir(MoveDir _dir)
+    public virtual ActionType CheckMoveDir(MoveDir _dir)
     {
         if (hasCheakAction) return nextActionType;
         hasCheakAction = true;

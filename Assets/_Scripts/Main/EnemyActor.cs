@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AStar;
-public class EnemyActor : VividActor
+public class EnemyActor : RoleTemplateActor
 {
     #region Parameters
 
@@ -56,6 +56,10 @@ public class EnemyActor : VividActor
                 //攻击
                 break;
         }
+    }
+    public override ActionType CheckMoveDir(MoveDir _dir)
+    {
+        return base.CheckMoveDir(_dir);
     }
     #endregion
 }
