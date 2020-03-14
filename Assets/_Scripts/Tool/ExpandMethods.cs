@@ -326,7 +326,8 @@ public static class ExpandMethods
     }
 
     //获取指定方向的位置:当前位置在某个方向上的坐标
-    public static Vector2Int GetVec2ToDir(this Vector2Int _curPos, MoveDir _dir)
+    public static Vector2Int GetVec2ToDir
+        (this Vector2Int _curPos, MoveDir _dir)
     {        
         return _dir.MoveDirChangeToVec2() + _curPos;
     }
