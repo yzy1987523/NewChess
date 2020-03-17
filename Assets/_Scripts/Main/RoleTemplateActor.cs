@@ -126,6 +126,7 @@ public class RoleTemplateActor : VividActor
         switch (_type)
         {
             case SceneActorType.Null:
+            case SceneActorType.Exit:
                 //移动       
                 if (ThisActorType == SceneActorType.Player)
                 {

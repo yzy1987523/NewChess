@@ -93,7 +93,7 @@ public class WeaponCtrl : MonoBehaviour
             if (replicaArrow == null)
             {
                 replicaArrow = weaponHandle_R.FindInAll("ReplicaArrow").GetComponentInChildren<Bullet>();
-                replicaArrow.transform.SetParent(null);
+                //replicaArrow.transform.SetParent(null);
             }
             return replicaArrow;
         }

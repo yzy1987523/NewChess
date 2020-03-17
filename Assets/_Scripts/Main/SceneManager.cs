@@ -19,19 +19,34 @@ public class SceneManager : MonoBehaviour
     public RoleTemplateActor followObj;
     public Vector2Int enemyCount = new Vector2Int(1, 3);
     public EnemyActor enemyObj;
-    public Vector2Int boxCount = new Vector2Int(1, 2);
+    public Vector2Int boxCount = new Vector2Int(1, 2);    
     public BoxCtrl boxObj;
+    public NodeActor exitObj;
+    public TextMesh textObj;
+    PlayerActor mainPlayer;
+    private Vector2Int exitPos;
     List<NodeClass> nodes = new List<NodeClass>();
     List<SceneActorType> sceneStateList = new List<SceneActorType>();
     List<TextMesh> textList = new List<TextMesh>();
-    public TextMesh textObj;
-
     List<EnemyActor> enemyList = new List<EnemyActor>();
     List<RoleTemplateActor> followList = new List<RoleTemplateActor>();
     List<BoxCtrl> boxList = new List<BoxCtrl>();
-    PlayerActor mainPlayer;
+
+
     #endregion
     #region Properties
+    public Vector2Int ExitPos
+    {
+        get
+        {
+            return exitPos;
+        }
+
+        set
+        {
+            exitPos = value;
+        }
+    }
     #endregion
 
     #region 创建初始场景
@@ -43,15 +58,24 @@ public class SceneManager : MonoBehaviour
         nodes.Clear();
         enemyList.Clear();
         boxList.Clear();
+        followList.Clear();
         textList.Clear();
-        Destroy();
+        sceneStateList.Clear();
+        DestroyObj();
         var _nodeCount = size.x * size.y;
         var _tempNodes = new List<NodeClass>();
         //设置主角
         var _node = new NodeClass();
         _node.nodeType = NodeType.NormalNode;
-        _node.nodeObj = Instantiate(playerObj);
-        mainPlayer = (PlayerActor)_node.nodeObj;
+        if (mainPlayer == null)
+        {
+            _node.nodeObj = Instantiate(playerObj);
+            mainPlayer = (PlayerActor)_node.nodeObj;
+        }
+        else
+        {
+            _node.nodeObj = mainPlayer;
+        }
         _node.nodeObj.Init(SceneActorType.Player);
         _tempNodes.Add(_node);
         //设置墙
@@ -97,13 +121,22 @@ public class SceneManager : MonoBehaviour
             boxList.Add((BoxCtrl)_temp.nodeObj);
             _tempNodes.Add(_temp);
         }
-        //设置正常node
-        for (var i = _wallCount + _boxCount + _enemyCount + _followCount + 1; i < _nodeCount; i++)
+        //设置出口
+        {
+            var _temp = new NodeClass();
+            _temp.nodeType = NodeType.NormalNode;
+            _temp.nodeObj = Instantiate(exitObj);
+            _temp.nodeObj.Init(SceneActorType.Exit);
+            _tempNodes.Add(_temp);
+        }
+        //设置正常node[1个主角，1个出口]
+        for (var i = _wallCount + _boxCount + _enemyCount + _followCount + 2; i < _nodeCount; i++)
         {
             var _temp = new NodeClass();
             _temp.nodeType = NodeType.NormalNode;
             _tempNodes.Add(_temp);
         }
+        
         //给nodes赋值
         nodes = StaticFun.RandomSort(_tempNodes);
         for (var i = 0; i < nodes.Count; i++)
@@ -121,11 +154,23 @@ public class SceneManager : MonoBehaviour
                 nodes[i].nodeObj.transform.localRotation = Quaternion.Euler(0, 180, 0);
                 sceneStateList[i] = nodes[i].nodeObj.ThisActorType;
                 nodes[i].nodeObj.SetPos(nodes[i].nodePos);
+                if (nodes[i].nodeObj.ThisActorType == SceneActorType.Exit)
+                {
+                    ExitPos = nodes[i].nodeObj.Vec2Pos;
+                }
             }
             textList[i].text = sceneStateList[i].ToString();
         }
         AStarTool.SetNodes(nodes, size);
         mainPlayer.StartGame();
+    }
+    public void RCreateNode(LevelData _data)
+    {
+        followCount = _data.followCount;
+        //wallCount = _data.wallCount;
+        enemyCount = _data.enemyCount;
+        boxCount = _data.boxCount;
+        RCreateNode();
     }
     Vector2Int GetPosByIndex(int _index)
     {
@@ -138,18 +183,23 @@ public class SceneManager : MonoBehaviour
     }
     //生成节点对象   
     [ContextMenu("Destroy")]
-    private void Destroy()
+    private void DestroyObj()
     {
         while (transform.childCount > 0)
         {
             var _temp = transform.GetChild(0);
             _temp.SetParent(null);
+#if UNITY_EDITOR
             DestroyImmediate(_temp.gameObject);
+#else
+
+            Destroy(_temp.gameObject);
+#endif
         }
     }
-    #endregion
+#endregion
 
-    #region get方法
+#region get方法
     public PlayerActor GetMainPlayer()
     {
         return mainPlayer;
@@ -165,8 +215,8 @@ public class SceneManager : MonoBehaviour
 
     int GetIndexByVec2(Vector2Int _v)
     {
-        if (_v.x < 0 || _v.y < 0||_v.x>size.x-1||_v.y>size.y-1) return -1;
-        var _temp =_v.x +_v.y * size.x;
+        if (_v.x < 0 || _v.y < 0 || _v.x > size.x - 1 || _v.y > size.y - 1) return -1;
+        var _temp = _v.x + _v.y * size.x;
         return _temp;
     }
     public SceneActorType GetSceneNodeTypeByVec2(Vector2Int _v)
@@ -189,10 +239,10 @@ public class SceneManager : MonoBehaviour
         }
         return nodes[_temp].nodeObj;
     }
-    #endregion
+#endregion
 
 
-    #region Enemy Manager
+#region Enemy Manager
     public IEnumerator IE_EnemyAction()
     {
         for (var i = 0; i < enemyList.Count; i++)
@@ -200,7 +250,7 @@ public class SceneManager : MonoBehaviour
             yield return StartCoroutine(enemyList[i].IE_OnceAction());
         }
     }
-    #endregion
+#endregion
 
 
 

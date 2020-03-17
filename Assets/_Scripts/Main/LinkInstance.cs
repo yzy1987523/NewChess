@@ -14,6 +14,7 @@ public class LinkInstance
     private SceneManager sceneManager;
 
     private PlayerActor mainPlayer;
+    GameLevelManager levelManager;
     #endregion
     #region Properties
     public static LinkInstance Instance
@@ -57,6 +58,23 @@ public class LinkInstance
         set
         {
             sceneManager = value;
+        }
+    }
+
+    public GameLevelManager LevelManager
+    {
+        get
+        {
+            if (levelManager == null)
+            {
+                levelManager= Object.FindObjectOfType<GameLevelManager>();
+            }
+            return levelManager;
+        }
+
+        set
+        {
+            levelManager = value;
         }
     }
     #endregion

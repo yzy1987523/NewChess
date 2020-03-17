@@ -44,6 +44,7 @@ public enum SceneActorType
     Obstacle,
     Box,
     Follow,//随从
+    Exit,//出口
 }
 public enum MoveDir
 {

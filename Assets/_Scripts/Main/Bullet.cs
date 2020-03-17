@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
     }
     public void Shot(Vector3 _target)
     {
+
         StartCoroutine(IE_Move(_target));
     }
     private IEnumerator IE_Move(Vector3 _target)

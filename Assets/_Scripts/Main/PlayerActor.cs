@@ -12,7 +12,7 @@ public class PlayerActor : RoleTemplateActor
     #region Parameters    
     List<RoleTemplateActor> roleTemplateActors;
     bool hasAddFollow;
-
+    bool levelEnd;
     #endregion
     #region Properties
     public List<RoleTemplateActor> RoleTemplateActors
@@ -99,10 +99,28 @@ public class PlayerActor : RoleTemplateActor
         }
         if (nextActionType==ActionType.Move|| nextActionType == ActionType.Attack)
             yield return StartCoroutine(LinkInstance.Instance.SceneManager.IE_EnemyAction());
+        if (CheckEnd())
+        {
+            LinkInstance.Instance.LevelManager.LevelEnd();
+        }
+        else
+        {
         isMoving = false;
         hasCheakAction = false;        
-    }
 
+        }
+        
+    }
+    protected override void ChangeSceneNodes(MoveDir _dir)
+    {
+        Vec2Pos += _dir.MoveDirChangeToVec2();        
+        LinkInstance.Instance.SceneManager.ChangeSceneNodes(this, Vec2Pos, ThisActorType);
+       
+    }
+    bool CheckEnd()
+    {        
+        return Vec2Pos == LinkInstance.Instance.SceneManager.ExitPos;
+    }
     //让所有随从转向正方向
     //protected IEnumerator FollowRot()
     //{
@@ -116,7 +134,11 @@ public class PlayerActor : RoleTemplateActor
     #region Utility Methods
     public void StartGame()
     {
-       CheckAround(curDir);
+        RoleTemplateActors.Clear();
+        hasAddFollow = false;
+        isMoving = false;
+        hasCheakAction = false;
+        CheckAround(curDir);
     }
     public void AddFollow(RoleTemplateActor _follow)
     {
