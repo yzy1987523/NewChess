@@ -4,7 +4,8 @@
 	{
 		_Color("Color",Color) = (1,1,1,1)
 		//贴图平铺系数
-	    _TileFactor("TileFactor", Range(0, 10)) = 1
+	    _TileFactor("TileFactor", Range(0, 20)) = 1
+		_MainTexture("MainTexture",2D)="white"{}
 		_Hatch0("Hatch0",2D)="white"{}
 	    _Hatch1("Hatch1",2D) = "white"{}
 	    _Hatch2("Hatch2",2D) = "white"{}
@@ -75,6 +76,7 @@
  
 			float4 _Color;
 	        float _TileFactor;
+			sampler2D _MainTexture;
 			sampler2D _Hatch0;
 			sampler2D _Hatch1;
 			sampler2D _Hatch2;
@@ -99,7 +101,8 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				//平铺系数越大，显示的贴图越密集
-				o.uv = v.texcoord* _TileFactor;
+				o.uv = v.texcoord;
+				
 				float3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
 				float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 				//漫反射
@@ -142,15 +145,16 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{ 
-				float4 hatchTex0 = tex2D(_Hatch0, i.uv) * i.hatchWeights0.x;
-				float4 hatchTex1 = tex2D(_Hatch1, i.uv) * i.hatchWeights0.y;
-				float4 hatchTex2 = tex2D(_Hatch2, i.uv) * i.hatchWeights0.z;
-				float4 hatchTex3 = tex2D(_Hatch3, i.uv) * i.hatchWeights1.x;
-				float4 hatchTex4 = tex2D(_Hatch4, i.uv) * i.hatchWeights1.y;
-				float4 hatchTex5 = tex2D(_Hatch5, i.uv) * i.hatchWeights1.z;
+				float4 _main = tex2D(_MainTexture, i.uv)*2;
+				float4 hatchTex0 = tex2D(_Hatch0, i.uv*_TileFactor) * i.hatchWeights0.x;
+				float4 hatchTex1 = tex2D(_Hatch1, i.uv*_TileFactor) * i.hatchWeights0.y;
+				float4 hatchTex2 = tex2D(_Hatch2, i.uv*_TileFactor) * i.hatchWeights0.z;
+				float4 hatchTex3 = tex2D(_Hatch3, i.uv*_TileFactor) * i.hatchWeights1.x;
+				float4 hatchTex4 = tex2D(_Hatch4, i.uv*_TileFactor) * i.hatchWeights1.y;
+				float4 hatchTex5 = tex2D(_Hatch5, i.uv*_TileFactor) * i.hatchWeights1.z;
 				//漫反射暗色部分权重越大，白色越少
 				float4 whiteColor = float4(1, 1, 1, 1)*(1 - i.hatchWeights0.x - i.hatchWeights0.y - i.hatchWeights0.z - i.hatchWeights1.x - i.hatchWeights1.y - i.hatchWeights1.z);
-				float4 hatchColor = hatchTex0 + hatchTex1 + hatchTex2 + hatchTex3 + hatchTex4 + hatchTex5+ whiteColor;
+				float4 hatchColor = hatchTex0 + hatchTex1 + hatchTex2 + hatchTex3 + hatchTex4 + hatchTex5+ whiteColor+_main;
 				//使物体接受阴影
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 				return float4(hatchColor.rgb*_Color.rgb*atten, 1.0);

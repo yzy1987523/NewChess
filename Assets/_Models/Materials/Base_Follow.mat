@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Base_Follow
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 65a9ee556b3374b45bb37d710517399c, type: 3}
   m_ShaderKeywords: OUTLINE_BLENDING
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -39,7 +39,35 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Hatch0:
+        m_Texture: {fileID: 2800000, guid: c987ea25560242345ab4f85a22b38216, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hatch1:
+        m_Texture: {fileID: 2800000, guid: 61151a047534d434bb9fc46ee2800491, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hatch2:
+        m_Texture: {fileID: 2800000, guid: e9462e03501a4e5469447c3ea314f6f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hatch3:
+        m_Texture: {fileID: 2800000, guid: f1c9d78540b8b2f4087c2b932529c743, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hatch4:
+        m_Texture: {fileID: 2800000, guid: 44290fb391a252b439ddabdd8443f212, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hatch5:
+        m_Texture: {fileID: 2800000, guid: 89b3069d2f49fbf4f885b036e83c57a9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 870a41526ff244f45a3075d4e689e967, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
         m_Texture: {fileID: 2800000, guid: 870a41526ff244f45a3075d4e689e967, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -74,6 +102,7 @@ Material:
     - _Offset1: 0
     - _Offset2: 0
     - _Outline: 1
+    - _OutlineFactor: 0
     - _Parallax: 0.02
     - _RampSmooth: 0.1
     - _RampThreshold: 0.5
@@ -84,11 +113,12 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendOutline: 0
     - _TexLod: 4.39
+    - _TileFactor: 15
     - _UVSec: 0
     - _ZSmooth: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.034784317, g: 1, b: 0, a: 1}
+    - _Color: {r: 0.48453385, g: 0.4295123, b: 0.7169812, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}

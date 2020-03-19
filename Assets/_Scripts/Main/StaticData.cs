@@ -13,8 +13,8 @@ public class StaticData
     public static float FollowRotTime;
     #endregion
     #region 统一量
-    public static Color FollowColor_Follow=Color.green;
-    public static Color FollowColor_Normal=Color.yellow;
+    public static Color FollowColor_Follow=new Color(0.6256676f, 0.7169812f, 0.4295123f,1);
+    public static Color FollowColor_Normal= new Color(0.4845338f, 0.4295123f, 0.7169812f, 1);
 
     #endregion
     public enum FilePathType
